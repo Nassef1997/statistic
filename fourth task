@@ -1,0 +1,31 @@
+import pandas as pd
+from statistics import mean
+import math
+import matplotlib.pyplot as plt
+
+# функция считает т тест как в учебнике
+xren = math.sqrt(1/44 + 1/14)
+def t_test(arr1, arr2):
+   a = sum((xi - mean(arr1)) ** 2 for xi in arr1)
+   b = sum((xi - mean(arr2)) ** 2 for xi in arr2)
+   sigma_two = (a + b) / 56
+   se = math.sqrt(sigma_two) * xren
+   tstat = (mean(arr2) - mean(arr1)) / se
+   return tstat
+
+
+df = pd.read_csv('data.txt', header=None, sep='\t')
+n_pat = df.iloc[:,:44]
+bad_pat = df.iloc[:,44:]
+
+# считаем т тест для каждого гена
+t_arr, norm, bad = [], [], []
+for f in range(len(df)):
+   norm = n_pat.values[f].tolist()
+   bad = bad_pat.values[f].tolist()
+   t_arr.append(t_test(norm, bad))
+
+# рисуем гистограмму
+plt.style.use('ggplot')
+plt.hist(t_arr, bins=30)
+plt.show()
