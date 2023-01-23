@@ -1,0 +1,35 @@
+df <- read.csv('C:/Users/nasse/Downloads/Матстат/îáΓßΓáΓ/2/MouseEmpathy.csv')
+nrow(df[df$treatment == 'isolated',])
+df$treatment <- as.factor(df$treatment)
+
+library(ggplot2)
+ggplot(data = df, aes(x = treatment, y = percent.stretching, colour = treatment)) + 
+  stat_summary(geom = "pointrange", fun.data = mean_cl_normal)
+# we have one discrete predictor (with three levels) and one continuous dependent
+# may variable. Building a linear model
+
+mod <- lm(percent.stretching ~ treatment, data = df)
+round(coef(mod), 3)
+# in this case, the linear model can be written as the following equation
+# percent.stretching = 58.050 - 20.856(isolat) - 22.681(ow)
+# level bw in this case, we took as the base
+# for the null hypothesis, the model would look something like this
+mean(df$percent.stretching)
+percent.stretching = 42.488 + e
+# where e is the random part
+
+# now let's check whether the manifestations of pain differ significantly depending on the treatment
+# we will check by one-way ANOVA
+library(car)
+str_ano <- Anova(mod)
+str_ano
+# the test showed significant differences, which means that at least one mean
+# in the group significantly differs from the general average
+# it is clear from the figure that bw is different
+# run a post-hoc test to confirm our assumptions
+# we will use Tukey's test
+library(multcomp)
+mice_posthoc <- glht(mod, linfct = mcp(treatment = "Tukey"))
+summary(mice_posthoc)
+# excellent, we see that bw differs significantly in pairwise comparisons from
+# of two other factors
