@@ -1,0 +1,31 @@
+jopa <- read.csv('C:/Users/nasse/Downloads/Матстат/îáΓßΓáΓ/3/prostate.data', sep = '\t')
+jopa <- jopa[,2:10]
+cor(jopa[,1:7])
+# correlation matrix
+
+library(car)
+pairs(jopa)
+# dependencies of variables from each other
+
+mod1 <- lm( formula = lpsa ~ . , data = jopa)
+summary(mod1)
+vif(mod1)
+# see that lcp, gleason, pgg45 are collinear and not significant, delete them
+mod2 <- update(mod1, . ~ . -lcp -gleason -pgg45)
+summary(mod2)
+vif(mod2)
+
+# now, to compare the influence of predictors, we standardize them
+mod2_scaled <- lm(lpsa ~ scale(lcavol) + scale(lweight) + scale(age) + 
+                    scale(lbph) + scale(svi), data = jopa)
+summary(mod2_scaled)
+# the predictors lcavol, lweight, svi influence the model the most
+
+# remove unnecessary predictors using a private f criterion
+drop1(mod2, test = "F")
+mod3 <- update(mod2, . ~ . - age)
+drop1(mod3, test = "F")
+mod4 <- update(mod3, . ~ . - lbph)
+drop1(mod4, test = "F")
+
+summary(mod4)
