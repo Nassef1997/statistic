@@ -9,7 +9,7 @@ hist(df$pups)
 
 cov1 <- sum((df$inbreeding.coefficient - mean(df$inbreeding.coefficient)) * (df$pups - mean(df$pups)))/(nrow(df)-1)
 cov1 <- round(cov1, 4)
-cov(df$inbreeding.coefficient, df$pups) # проверили
+cov(df$inbreeding.coefficient, df$pups) 
 
 # calculate the unbiased sample variance for two random variables
 disp_inb <- round(sum((df$inbreeding.coefficient - mean(df$inbreeding.coefficient))^2)/(nrow(df)-1), 4)
@@ -24,10 +24,11 @@ t <- round(r_pirs * sqrt(22) / sqrt(1 - r_pirs^2), 4)
 # we climb into the table and compare the modulus of this value with the m distribution for 22 degrees of freedom
 # turned out to be significant, with p-value < 0.001
 
-# проверяем
+
 cor.test(df$inbreeding.coefficient, df$pups)
 # well, almost agreed, although here the p-value is slightly larger
 # more spearman can be counted
+
 cor.test(df$inbreeding.coefficient, df$pups, method = "spearman")
 # also obtained significant differences, allowing us to reject the null hypothesis
 Conclusion: inbreeding and the number of surviving puppies are negatively correlated values (significantly).
